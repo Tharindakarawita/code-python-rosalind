@@ -1,6 +1,38 @@
-DNA = open("C:/Users/Tharinda Karawita/Downloads/rosalind_gc.txt", "r")
+# Open Reading Frames solved 
+
+# Problem
+# Either strand of a DNA double helix can serve as the coding strand for RNA
+# transcription. Hence, a given DNA string implies six total reading frames,
+# or ways in which the same region of DNA can be translated into amino acids:
+# three reading frames result from reading the string itself, whereas three more
+# result from reading its reverse complement.
+
+# An open reading frame (ORF) is one which starts from the start codon and ends by
+# stop codon, without any other stop codons in between. Thus, a candidate protein
+# string is derived by translating an open reading frame into amino acids until a
+# stop codon is reached.
+
+# Given: A DNA string s of length at most 1 kbp in FASTA format.
+
+# Return: Every distinct candidate protein string that can be translated from ORFs
+# of s. Strings can be returned in any order.
+
+# Sample Dataset
+
+# >Rosalind_99
+# AGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGATCCGAGTAGCATCTCAG
+
+# Sample Output
+
+# MLLGSFRLIPKETLIQVAGSSPCNLS
+# M
+# MGMTPRLGLESLLE
+# MTPRLGLESLLE
+
+DNA = open("C:/Users/Tharinda Karawita/Downloads/rosalind_orf.txt", "r")
 Fasta_dict = {}
 Fasta_label = ""
+aa_seq_list =[]
 DNA = DNA.readlines()
 
 map = {"UUU":"F", "UUC":"F", "UUA":"L", "UUG":"L",
@@ -31,24 +63,34 @@ def dict_mk():
             Fasta_dict[Fasta_label] += line
     return Fasta_dict
 
-Fasta_seqs = list(dict_mk().values())
-
-RDNA=Fasta_seqs[0][::-1]
-
-RDNA = RDNA.translate({65:84,84:65,71:67,67:71})
-RDNA2 = RDNA.translate({84:85})
-RDNA1 = Fasta_seqs[0].translate({84:85})
-print(RDNA1)
-print(RDNA2)
+def DNA_double_helix():
+    Fasta_seqs = list(dict_mk().values())
+    RDNA=Fasta_seqs[0][::-1]
+    RDNA = RDNA.translate({65:84,84:65,71:67,67:71})
+    RDNA2 = RDNA.translate({84:85})
+    RDNA1 = Fasta_seqs[0].translate({84:85})
+    return RDNA1,RDNA2
 
 
-for seq in RDNA1,RDNA2:
-    AA_seq = ""
+
+for seq in DNA_double_helix():
     for i in range(0,len(seq)):
-        codon = seq[i:i+3]
-        AA = map.get(codon)
-        AA = str(AA)
-        if AA == "M":
-            print("K")
+        x = seq.find("AUG",i,i+3)
+        if x != -1:
+            AA_seq = ""
+            # print(x)
+            for n in range(x,len(seq),3):
+                codon = seq[n:n+3]
+                AA = map.get(codon)
+                AA = str(AA)
+                if AA == "STOP":
+                    AA_seq += "-"
+                    break
+                else:
+                    AA_seq += AA
+            if AA_seq.endswith("-"):
+                if AA_seq not in aa_seq_list:
+                    aa_seq_list.append(AA_seq)
+                    print(AA_seq[:-1])
 
     
