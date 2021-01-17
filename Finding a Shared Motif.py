@@ -24,9 +24,7 @@
 # Sample Output
 # AC
 
-
-from statistics import mode 
-DNA = open("C:/Users/Tharinda Karawita/Downloads/rosalind_lcsm.txt", "r")
+DNA = open("C:/Users/Tharinda Karawita/Downloads/rosalind_lcsm (1).txt", "r")
 Fasta_dict = {}
 Fasta_label = ""
 DNA = DNA.readlines()
@@ -38,41 +36,25 @@ def dict_mk():
             Fasta_dict[Fasta_label] =""
         else:
             Fasta_dict[Fasta_label] += line
-    return Fasta_dict
+    Fasta_seqs = list(Fasta_dict.values())
+    return Fasta_seqs
 
-Fasta_seq = list(dict_mk().values())
-seq = []
-for n in range(0,len(Fasta_seq)):
-    print(Fasta_seq[n])
-    for m in range(0,len(Fasta_seq[n])):
-        for i in range(0,len(Fasta_seq[n])):
-            seq1 = Fasta_seq[n][0+i:2+i+m]
-#            print(Fasta_seq[n][-2-i:0-i])
-            if (2+i+m) - (0+i) == len(seq1):
-#                print(seq1)
-                for b in range(0,len(Fasta_seq)):
-                    if not n == b:
-                            for c in range(0,len(Fasta_seq[b])):
-                                for a in range(0,len(Fasta_seq[b])):
-                                    seq2 = Fasta_seq[b][0+a:2+a+c]
-                                    if (2+a+c) - (0+a) == len(seq2):
-                                        if seq1 == seq2:
-                                            print(seq1)
-                                            seq.append(seq1)
-
-print(seq)
-longest_seq = []
-num = seq[0] 
-#print(seq)
-for r in seq: 
-    curr_frequency = seq.count(r) 
-    if curr_frequency >= (len(Fasta_seq))*2: #2 is wrong / there must be same seq in the same string 
-        longest_seq.append(r)
-
-print(max(longest_seq,key=len))
+Substring = []
+for Fasta_seq_num in range(0,len(dict_mk())):
+    Fasta_seq = dict_mk()[Fasta_seq_num]
+    Substring.append([])
+    for n in range(0,len(Fasta_seq)):
+        for i in range(0,len(Fasta_seq)):
+            if (i+n+2) - (0+i) == len(Fasta_seq[0+i:i+n+2]):
+                Substring[Fasta_seq_num].append(Fasta_seq[0+i:i+n+2])
 
 
+ls = [set(l) for l in Substring]
 
-        
+exec_string = "ls[{}]"
+string = ""
+for seq in range(0,len(Substring)):
+    string += exec_string.format(seq) + " & "
 
-
+string = "print(max("+string[0:len(string)-3]+",key=len))"
+exec(string)
